@@ -24,6 +24,6 @@ def weighted_entropy(samples_df, attribute_column, output_column):
     return summation
 
 
-def Gain(samples_df, attribute_column, output_column):
+def gain(samples_df, attribute_column, output_column):
     return entropy(samples_df, output_column) - weighted_entropy(samples_df, attribute_column, output_column)
 

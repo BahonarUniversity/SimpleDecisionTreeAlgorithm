@@ -7,21 +7,25 @@ from BaseFunctionsContinuous import *
 
 class DiscretizeContinuousAttributes:
 
-    def __init__(self, data_path):
+    def __init__(self, data, output):
         self.name = "dis"
-        self.data = pd.read_csv(data_path)
-        self.data = self.data.sample(frac=1, ignore_index=True)
-        self.discrete_data = self.data.copy();
+        self.data = data
+
+        r_size = self.data.shape[0]
+        c_size = self.data.shape[1]
+        item_count = r_size * c_size
+        npa = np.array(['' for _ in range(item_count)]).reshape(r_size, c_size)
+        self.discrete_data = pd.DataFrame(npa, columns=self.data.columns, index=self.data.index)
+        for i in range(self.data.shape[0]):
+            self.discrete_data.loc[i, output] = self.data.loc[i, output]
 
     def discretize_data(self, output):
-        self.split_dataset();
         for attr in self.data.columns:
             if attr == output:
                 continue
             cut_points = self.discretize_attribute(attr, output)
             self.update_discrete_array(cut_points, attr)
-        print(self.discrete_data)
-
+        return self.discrete_data
 
     def update_discrete_array(self, cut_points, attribute):
         for i in range(self.data.shape[0]):
@@ -60,15 +64,5 @@ class DiscretizeContinuousAttributes:
 
         return cut_points #[cut_points, regions_classes, regions_samples_count]
 
-    def split_dataset(self):
-        count = self.data.shape[0]
-        n = count*0.7;
-        train_data = self.data.loc[0:n, :]
-        test_data = self.data.loc[n:count, :]
-
-        #print(train_data);
-        #print("*\n*\n*\n*\n*");
-        #print(test_data);
-        return train_data, test_data
 
 

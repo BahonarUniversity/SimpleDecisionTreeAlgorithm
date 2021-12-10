@@ -39,9 +39,11 @@ def error(test_samples, test_results):
 
 
 def get_region_number(value, cut_points):
-    target_index = 0
+    upper_bound = 100000000.0
+    lower_bound = cut_points[0]
     for i in range(len(cut_points)):
-        if value<cut_points[i]:
-            break;
-        target_index += 1;
-    return target_index;
+        if value < cut_points[i]:
+            upper_bound = cut_points[i]
+            break
+        lower_bound = cut_points[i]
+    return 'lambda val: '+str(lower_bound)+' <= val < '+str(upper_bound);
