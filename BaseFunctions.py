@@ -4,7 +4,7 @@ import math
 def entropy(samples_df, output):
     summation = 0.0
     class_set = set(samples_df.loc[:, output])
-    number_of_samples = len(samples_df[output])
+    number_of_samples = samples_df.shape[0]
     value_counts = samples_df.loc[:, output].value_counts()
     for c in class_set:
         p = value_counts[c]/number_of_samples
@@ -15,7 +15,7 @@ def entropy(samples_df, output):
 def weighted_entropy(samples_df, attribute_column, output_column):
     summation = 0.0
     attribute_values_set = set(samples_df.loc[:, attribute_column])
-    value_counts = samples_df.loc[:,attribute_column].value_counts()
+    value_counts = samples_df.loc[:, attribute_column].value_counts()
     number_of_samples = len(samples_df[output_column])
     for v in attribute_values_set:
         value_ratio = value_counts[v]/number_of_samples

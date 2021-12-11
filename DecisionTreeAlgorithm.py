@@ -11,52 +11,54 @@ class DecisionTree:
         self.attributes = self.data.columns.to_list()
         self.attributes.remove(output)
         self.tree = Node("", None)
-        #print(self.attributes)
+
 
     def learn(self) -> object:
-        #print("learn")
+        print("Began learning ...")
         self.__learn_tree(self.attributes, self.data, self.tree)
+        self.tree.sort()
         return self.tree;
 
     def __learn_tree(self, attributes, dataset, tree_node):
 
-        if type(attributes) == 'NoneType' or len(attributes) == 1:
-            tree_node.name = attributes[0]
-            tree_node.result = self.get_max_class(dataset, self.output)
-            return
-
-        gains = dict();
+        gains = dict()
         for attr in attributes:
             gains[attr] = gain(dataset, attr, self.output)
 
         max_attr = self.__max_gain_attribute(gains)
         tree_node.set_name(max_attr)
-        value_set = set(dataset[max_attr])
 
         remaining_attributes = attributes.copy()
         remaining_attributes.remove(max_attr)
-        #if tree_node.parent_node and tree_node.parent_node.name == "Mg":
-        #    print("value_set: ", len(value_set), "  attributes:", remaining_attributes)
 
-        if dataset.shape[0] < 15:
-            tree_node.result = self.get_max_class(dataset, self.output)
+        if remaining_attributes is None or len(remaining_attributes) == 0 or dataset.shape[0] < 2:
+            tree_node.result = self.__get_max_class(dataset, self.output)
             return
 
-        if len(value_set) == 1:
-            tree_node.result = self.get_max_class(dataset, self.output)
-            return
         class_set = set(dataset[self.output]);
         if len(class_set) == 1:
             tree_node.result = class_set.pop()
             return
-        #print(value_set)
+
+        value_set = set(dataset[max_attr])
+        if len(value_set) == 1:
+            mystr = ''
+            for attr in gains:
+                mystr += attr + ': ' + str(gains[attr])+'\n'
+            source_file = open('debug_text.txt', 'w')
+            print('', file=source_file)
+            source_file.close()
+            source_file = open('debug_text.txt', 'a')
+            print(mystr, file=source_file)
+            print(dataset.to_string(), file=source_file)
+            tree_node.result = self.__get_max_class(dataset, self.output)
+            source_file.close()
+            return
+
         for value in value_set:
-            #if max_attr == "Ca":
-                #print("max_attr: ", max_attr)
             new_node = Node("", tree_node)
             tree_node.add_node(value, new_node)
             self.__learn_tree(remaining_attributes, self.data.loc[self.data[max_attr] == value], new_node)
-        #print(value_set)
 
     def __max_gain_attribute(self, gains):
         max_gain = -1
@@ -70,9 +72,8 @@ class DecisionTree:
     def predict(self, value):
         node = self.tree.get_valid_node(value)
         result = ''
-        print('main value: ', value)
         if node is None:
-            print('node is none')
+            print('node is none:', self.tree.name, 'value: ', value)
             return
 
         while node is not None:
@@ -80,10 +81,21 @@ class DecisionTree:
                 result = node.result
                 return result
             node = node.get_valid_node(value)
-            print("node node:", node.name, '::::', node.sub_nodes)
-        print('end of predict: ', type(node), node)
         return result
 
-    def get_max_class(self, dataset, output):
+    def __get_max_class(self, dataset, output):
         value_counts = dataset[output].value_counts()
         return value_counts.index[0]
+
+    def test(self, test_data):
+        data_counts = test_data.shape[0]
+        tp = 0
+        for i in range(data_counts):
+            row = test_data.iloc[[i]]
+            predict = self.predict(row)
+            if predict == '':
+                continue
+            if predict == row.iloc[0][self.output]:
+                tp += 1
+        accuracy = tp / data_counts
+        return accuracy

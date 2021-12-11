@@ -38,15 +38,21 @@ def error(test_samples, test_results):
     return sum_of_square_error
 
 
-def get_region_number(value, cut_points):
+def get_region_function(value, cut_points):
     if len(cut_points) == 0:
         print('cut_points is empty for value:', value)
         return
     upper_bound = max(cut_points)
+    if value <= cut_points[0]:
+        return 'lambda val: val <= '+str(round(cut_points[0], 3));
+    if value > upper_bound:
+        return 'lambda val: val > '+str(round(upper_bound, 3));
+
     lower_bound = cut_points[0]
-    for i in range(len(cut_points)):
-        if value < cut_points[i]:
+    for i in range(1, len(cut_points)-1):
+        if value <= cut_points[i]:
             upper_bound = cut_points[i]
             break
         lower_bound = cut_points[i]
-    return 'lambda val: '+str(round(lower_bound, 3))+' <= val < '+str(round(upper_bound, 3));
+
+    return 'lambda val: '+str(round(lower_bound, 3))+' < val <= '+str(round(upper_bound, 3));
