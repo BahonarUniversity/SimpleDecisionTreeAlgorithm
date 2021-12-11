@@ -17,6 +17,7 @@ def weighted_entropy(samples_df, attribute_column, output_column):
     attribute_values_set = set(samples_df.loc[:, attribute_column])
     value_counts = samples_df.loc[:, attribute_column].value_counts()
     number_of_samples = len(samples_df[output_column])
+    print('attribute_values_set:',attribute_values_set)
     for v in attribute_values_set:
         value_ratio = value_counts[v]/number_of_samples
         value_entropy = entropy(samples_df.loc[samples_df[attribute_column] == v], output_column)
@@ -25,5 +26,6 @@ def weighted_entropy(samples_df, attribute_column, output_column):
 
 
 def gain(samples_df, attribute_column, output_column):
+
     return entropy(samples_df, output_column) - weighted_entropy(samples_df, attribute_column, output_column)
 

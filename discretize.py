@@ -31,13 +31,15 @@ class DiscretizeContinuousAttributes:
         return self.discrete_data
 
     def __update_discrete_array(self, cut_points, attribute):
+        if len(cut_points) == 0:
+            print('cut_points:', cut_points)
+
         for i in range(self.data.shape[0]):
             self.discrete_data.at[i, attribute] = get_region_function(self.data.loc[i, attribute], cut_points)
 
     def __discretize_attribute(self, attribute):
         df = self.data.loc[:, [attribute, self.output]]
         df = df.sort_values(by=attribute, ignore_index=True)
-
         self.__calculate_cut_points(df, attribute)
 
     def __calculate_cut_points(self, dataframe, attribute):
@@ -54,9 +56,8 @@ class DiscretizeContinuousAttributes:
 
         number_of_samples = dataframe.shape[0]
 
-        while upward < size-1 and downward > 0:
+        while upward < size-1 and downward >= 0:
             upward += 1
-            downward -= 1
             if last_class != dataframe.loc[upward, self.output]:
                 if self.__calculate_one_direction(dataframe, attribute, last_up_attr_value, upward, number_of_samples):
                     return
@@ -65,6 +66,8 @@ class DiscretizeContinuousAttributes:
                 if self.__calculate_one_direction(dataframe, attribute, last_down_attr_value, downward, number_of_samples):
                     return
                 last_class = dataframe.loc[downward, self.output]
+
+            downward -= 1
 
             last_up_attr_value = dataframe.loc[upward, attribute];
             last_down_attr_value = dataframe.loc[downward, attribute];
