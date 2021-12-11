@@ -1,19 +1,22 @@
 from node import Node
 import pandas as pd
 
+
 class TestTree:
-    def __init__(self, tree, test_data):
-        self.tree = tree
+    def __init__(self, tree_algorithm, test_data):
+        self.tree_algorithm = tree_algorithm
         self.test_data = test_data
 
     def test(self, output):
-        sum_of_square_error = 0
-        for i in range(self.test_data.shape[0]):
-            print("test row: ", self.test_data.iloc[[i]])
-            predict = self.tree.predict(self.test_data.iloc[[i]])
-            print(type(predict), predict)
-            if predict == None:
+        data_counts = self.test_data.shape[0]
+        tp = 0
+        for i in range(data_counts):
+            row = self.test_data.iloc[[i]]
+            predict = self.tree_algorithm.predict(row)
+            if predict == '':
                 continue
-            sum_of_square_error += (self.test_data[output] - predict)**2
-        return -sum_of_square_error
+            if predict == row.iloc[0][output]:
+                tp += 1
+        accuracy = tp / data_counts
+        return accuracy
 

@@ -39,11 +39,14 @@ def error(test_samples, test_results):
 
 
 def get_region_number(value, cut_points):
-    upper_bound = 100000000.0
+    if len(cut_points) == 0:
+        print('cut_points is empty for value:', value)
+        return
+    upper_bound = max(cut_points)
     lower_bound = cut_points[0]
     for i in range(len(cut_points)):
         if value < cut_points[i]:
             upper_bound = cut_points[i]
             break
         lower_bound = cut_points[i]
-    return 'lambda val: '+str(lower_bound)+' <= val < '+str(upper_bound);
+    return 'lambda val: '+str(round(lower_bound, 3))+' <= val < '+str(round(upper_bound, 3));

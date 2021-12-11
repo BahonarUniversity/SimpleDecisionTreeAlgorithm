@@ -25,15 +25,17 @@ class DiscretizeContinuousAttributes:
                 continue
             cut_points = self.discretize_attribute(attr, output)
             self.update_discrete_array(cut_points, attr)
+            break;
         return self.discrete_data
 
     def update_discrete_array(self, cut_points, attribute):
+        print('d_shape:', self.discrete_data.shape, 'c_shape:',self.data.shape)
         for i in range(self.data.shape[0]):
             self.discrete_data.at[i, attribute] = get_region_number(self.data.loc[i, attribute], cut_points)
 
     def discretize_attribute(self, attribute, output):
         cut_points = []
-        regions_classes = [];
+        regions_classes = []
         regions_samples_count = []
         df = self.data.loc[:, [attribute, output]]
         df = df.sort_values(by=attribute, ignore_index=True)

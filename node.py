@@ -18,13 +18,14 @@ class Node:
         self.name = name
 
     def get_valid_node(self, value):
-        print("value.iloc[0][self.name]:", value.iloc[0][self.name] )
+        #print("value.iloc[0][self.name]:", value.iloc[0][self.name] )
         running_value = value.iloc[0][self.name]
         for node in self.sub_nodes:
             check_result = eval(node)(running_value)
             if check_result:
                 new_node = self.sub_nodes[node]
-                print("node:", node, "check_result:", check_result, "new_node:",new_node)
+                print("node:", node, 'self.sub_nodes[node]: ', self.sub_nodes[node])
+                print("check_result:", check_result, "new_node:", new_node)
                 return new_node
 
         return None

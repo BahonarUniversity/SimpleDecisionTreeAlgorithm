@@ -3,6 +3,7 @@ import pandas as pd
 from DecisionTreeAlgorithm import DecisionTree
 from SplitData import train_test_data
 from test import TestTree
+from VisualizeTree import text_representation_tree
 
 
 # Press Shift+F10 to execute it or replace it with your code.
@@ -16,11 +17,13 @@ if __name__ == '__main__':
     train_data, test_data = train_test_data(data, 70)
     dca = DiscretizeContinuousAttributes(train_data, 'Type')
     discrete_data = dca.discretize_data('Type')
-    dt = DecisionTree(discrete_data, 'Type')
-    dt.learn()
+    #dta = DecisionTree(discrete_data, 'Type')
+    #dt = dta.learn()
 
-    testT = TestTree(dt, test_data)
-    error = testT.test('Type')
-    print(error)
+    #text_representation_tree(dt, '', '')
+
+    #testT = TestTree(dta, test_data)
+    #accuracy = testT.test('Type')
+    #print("accuracy:", accuracy)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

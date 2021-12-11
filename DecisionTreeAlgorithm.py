@@ -13,7 +13,7 @@ class DecisionTree:
         self.tree = Node("", None)
         #print(self.attributes)
 
-    def learn(self):
+    def learn(self) -> object:
         #print("learn")
         self.__learn_tree(self.attributes, self.data, self.tree)
         return self.tree;
@@ -69,11 +69,20 @@ class DecisionTree:
 
     def predict(self, value):
         node = self.tree.get_valid_node(value)
-        #print(type(node))
-        while type(node) == 'Node':
+        result = ''
+        print('main value: ', value)
+        if node is None:
+            print('node is none')
+            return
+
+        while node is not None:
+            if node.result != '':
+                result = node.result
+                return result
             node = node.get_valid_node(value)
-            if node.result != None and node.result != '':
-                return node.result
+            print("node node:", node.name, '::::', node.sub_nodes)
+        print('end of predict: ', type(node), node)
+        return result
 
     def get_max_class(self, dataset, output):
         value_counts = dataset[output].value_counts()
