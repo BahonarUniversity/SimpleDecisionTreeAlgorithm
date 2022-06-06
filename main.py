@@ -47,8 +47,8 @@ def run_for(data_base, output):
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     glass_accuracy = run_for('glass.csv', 'Type')
-    heart_accuracy = run_for('heart.csv', 'target')
     print('Glass Accuracy:', glass_accuracy)
+    heart_accuracy = run_for('heart.csv', 'target')
     print('Heart Accuracy:', heart_accuracy)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
